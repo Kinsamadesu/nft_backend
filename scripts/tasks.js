@@ -1,0 +1,78 @@
+const { task } = require('hardhat/config');
+const { getAccount, getContract, getEnvVariable } = require('./helpers');
+const fetch = require('node-fetch');
+
+task('check-balance', 'Prints out the balance of your account').setAction(
+  async function (taskArguments, hre) {
+    const account = getAccount();
+    console.log(
+      `Account balance for ${account.address}: ${await account.getBalance()}`
+    );
+  }
+);
+
+task('deploy', 'Deploys the contract').setAction(async function (
+  taskArguments,
+  hre
+) {
+  const nftContractFactory = await hre.ethers.getContractFactory(
+    getEnvVariable('NFT_CONTRACT_NAME'),
+    getAccount()
+  );
+  const nft = await nftContractFactory.deploy();
+  console.log(`Contract deployed to address: ${nft.address}`);
+});
+
+task('mint', 'Mints from the NFT contract')
+  .addParam('address', 'The address to receive a token')
+  .setAction(async function (taskArguments, hre) {
+    const contract = await getContract(hre);
+    const transactionResponse = await contract.safeMint(taskArguments.address, {
+      gasLimit: 500_000,
+    });
+    console.log(`Transaction Hash: ${transactionResponse.hash}`);
+  });
+
+task(
+  'publicMint',
+  'Mints from the NFT contract using public method with payment'
+)
+  .addParam('address', 'The address to receive a token')
+  .setAction(async function (taskArguments, hre) {
+    const contract = await getContract(hre);
+    const transactionResponse = await contract.publicMint(
+      taskArguments.address,
+      {
+        gasLimit: 500_000,
+      }
+    );
+    console.log(`Transaction Hash: ${transactionResponse.hash}`);
+  });
+
+task('getMetadata', 'Fetches the token metadata for the given token ID')
+  .addParam('tokenid', 'The tokenID to fetch metadata for')
+  .setAction(async function (taskArguments, hre) {
+    const contract = await getContract(hre);
+    const response = await contract.tokenURI(taskArguments.tokenid, {
+      gasLimit: 500_000,
+    });
+
+    const metadata_url = response;
+    console.log(`Metadata URL: ${metadata_url}`);
+
+    const metadata = await fetch(metadata_url).then((res) => res.json());
+    console.log(
+      `Metadata fetch response: ${JSON.stringify(metadata, null, 2)}`
+    );
+  });
+
+task('getOwner', 'Return the owner wallet of the token')
+  .addParam('tokenid', 'The tokenID to show the owner')
+  .setAction(async function (taskArguments, hre) {
+    const contract = await getContract(hre);
+    const response = await contract.ownerOf(taskArguments.tokenid, {
+      gasLimit: 500_000,
+    });
+
+    console.log('Owner of this token is', response);
+  });

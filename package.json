@@ -1,0 +1,16 @@
+{
+  "name": "nft",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "ethers": "^5.5.2",
+    "hardhat": "^2.7.0",
+    "node-fetch": "^2.6.6"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.4.0",
+    "dotenv": "^10.0.0"
+  }
+}
