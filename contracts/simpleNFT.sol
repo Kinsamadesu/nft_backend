@@ -12,12 +12,12 @@ contract KinTestTokenV2 is ERC721, Ownable, PaymentSplitter {
   Counters.Counter private _tokenIdCounter;
 
   // Constants
-  uint256 public constant TOTAL_SUPPLY = 3;
-  uint256 public constant MINT_PRICE = 0.01 ether;
+  uint256 constant TOTAL_SUPPLY = 3;
+  uint256 constant MINT_PRICE = 0.01 ether;
 
   constructor(address[] memory _payees, uint256[] memory _shares)
     payable
-    ERC721('KinTestTokenV2', 'KTT2')
+    ERC721('SIMPLENFT', 'SNFT')
     PaymentSplitter(_payees, _shares)
   {}
 
