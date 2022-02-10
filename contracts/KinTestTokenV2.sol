@@ -17,9 +17,13 @@ contract KinTestTokenV2 is ERC721, Ownable, PullPayment {
 
   constructor() ERC721('KinTestTokenV2', 'KTT2') {}
 
+  function totalSupply() public pure returns (uint256) {
+    return TOTAL_SUPPLY;
+  }
+
   function _baseURI() internal pure override returns (string memory) {
     return
-      'https://ipfs.io/ipfs/bafybeieiffkhetbq6rxhg4gvvmqaadx4nqixdw5vkvslzb42w6z44kojsu/metadata/';
+      'https://ipfs.io/ipfs/bafybeieeyvkwksmfscj4t47bf6cb7ukkj5nb7nygchsqnupc2vv3uowqca/metadata/';
   }
 
   function freeMint(address to) public onlyOwner {
