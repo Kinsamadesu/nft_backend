@@ -18,7 +18,7 @@ task('mint', 'Mints from the NFT contract')
   .addParam('address', 'The address to receive a token')
   .setAction(async function (taskArguments, hre) {
     const contract = await getContract(hre);
-    const transactionResponse = await contract.safeMint(taskArguments.address);
+    const transactionResponse = await contract.freeMint(taskArguments.address);
     console.log(`Transaction Hash: ${transactionResponse.hash}`);
   });
 
