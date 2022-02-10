@@ -4,9 +4,9 @@ pragma solidity ^0.8.2;
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
-import '@openzeppelin/contracts/security/PullPayment.sol';
+import '@openzeppelin/contracts/finance/PaymentSplitter.sol';
 
-contract KinTestTokenV2 is ERC721, Ownable, PullPayment {
+contract KinTestTokenV2 is ERC721, Ownable, PaymentSplitter {
   using Counters for Counters.Counter;
 
   Counters.Counter private _tokenIdCounter;
@@ -15,7 +15,11 @@ contract KinTestTokenV2 is ERC721, Ownable, PullPayment {
   uint256 public constant TOTAL_SUPPLY = 3;
   uint256 public constant MINT_PRICE = 0.01 ether;
 
-  constructor() ERC721('KinTestTokenV2', 'KTT2') {}
+  constructor(address[] memory _payees, uint256[] memory _shares)
+    payable
+    ERC721('KinTestTokenV2', 'KTT2')
+    PaymentSplitter(_payees, _shares)
+  {}
 
   function totalSupply() public pure returns (uint256) {
     return TOTAL_SUPPLY;
