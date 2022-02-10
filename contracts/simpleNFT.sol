@@ -6,7 +6,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/finance/PaymentSplitter.sol';
 
-contract KinTestTokenV2 is ERC721, Ownable, PaymentSplitter {
+contract SimpleNFT is ERC721, Ownable, PaymentSplitter {
   using Counters for Counters.Counter;
 
   Counters.Counter private _tokenIdCounter;
@@ -50,5 +50,14 @@ contract KinTestTokenV2 is ERC721, Ownable, PaymentSplitter {
     _tokenIdCounter.increment();
     uint256 newItemId = _tokenIdCounter.current();
     _safeMint(to, newItemId);
+  }
+
+  //--------- tests methods ------------------------------------------
+  function test_maxSupply() public onlyOwner {
+    _tokenIdCounter._value = 3;
+  }
+
+  function test_resetSupply() public onlyOwner {
+    _tokenIdCounter.reset();
   }
 }
