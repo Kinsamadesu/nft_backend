@@ -21,8 +21,8 @@ contract SimpleNFT is ERC721, Ownable, PaymentSplitter {
     PaymentSplitter(_payees, _shares)
   {}
 
-  function totalSupply() public pure returns (uint256) {
-    return TOTAL_SUPPLY;
+  function totalSupply() public view returns (uint256) {
+    return _tokenIdCounter.current();
   }
 
   function _baseURI() internal pure override returns (string memory) {
@@ -50,6 +50,20 @@ contract SimpleNFT is ERC721, Ownable, PaymentSplitter {
     _tokenIdCounter.increment();
     uint256 newItemId = _tokenIdCounter.current();
     _safeMint(to, newItemId);
+  }
+
+  function listTokenOf(address owner)
+    external
+    view
+    returns (uint256[] memory tokenList)
+  {
+    uint256[] memory list = new uint256[](balanceOf(owner));
+    for (uint256 i = 0; i < totalSupply(); i++) {
+      if (ownerOf(i + 1) == owner) {
+        list[i] = i + 1;
+      }
+    }
+    return list;
   }
 
   //--------- tests methods ------------------------------------------

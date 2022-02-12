@@ -8,13 +8,9 @@ describe('SimpleNFT contract', function () {
   let contract;
   let owner;
 
-  before(async () => {
+  beforeEach(async () => {
     contract = await deployContract();
     [owner] = await ethers.getSigners();
-  });
-
-  beforeEach(async () => {
-    await contract.test_resetSupply();
   });
 
   const deployContract = async () => {
@@ -31,8 +27,20 @@ describe('SimpleNFT contract', function () {
 
   describe('Given contract is deployed', () => {
     it('should return the total supply', async () => {
-      const supply = await contract.totalSupply();
-      expect(supply.toNumber()).equals(3);
+      let supply = await contract.totalSupply();
+      expect(supply.toNumber()).equals(0);
+      await contract.freeMint(owner.address);
+      await contract.freeMint(owner.address);
+      supply = await contract.totalSupply();
+      expect(supply.toNumber()).equals(2);
+    });
+
+    it('should list token for a specific address', async () => {
+      await contract.freeMint(owner.address);
+      await contract.freeMint(owner.address);
+      const tokensBig = await contract.listTokenOf(owner.address);
+      const tokens = tokensBig.map((b) => b.toNumber());
+      expect(tokens).to.eql([1, 2]);
     });
 
     describe('Given admin wants to mint', () => {
@@ -46,9 +54,8 @@ describe('SimpleNFT contract', function () {
       describe('Given total supply reached', () => {
         it('should not mint', async () => {
           await contract.test_maxSupply();
-          await expect(contract.freeMint(owner.address)).not.to.emit(
-            contract,
-            'Transfer'
+          await expect(contract.freeMint(owner.address)).to.be.revertedWith(
+            'Max supply reached'
           );
         });
       });
@@ -73,7 +80,9 @@ describe('SimpleNFT contract', function () {
               contract.publicMint(owner.address, {
                 value: ethers.utils.parseEther('0.02'),
               })
-            ).not.to.emit(contract, 'Transfer');
+            ).to.be.revertedWith(
+              'Transaction value did not equal the mint price'
+            );
           });
         });
       });
@@ -84,7 +93,7 @@ describe('SimpleNFT contract', function () {
             contract.publicMint(owner.address, {
               value: ethers.utils.parseEther('0.01'),
             })
-          ).not.to.emit(contract, 'Transfer');
+          ).to.be.revertedWith('Max supply reached');
         });
       });
     });
