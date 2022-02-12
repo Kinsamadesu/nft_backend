@@ -2,6 +2,7 @@
 # dependencies
 /cache
 /artifacts
+/abi
 /node_modules
 /.pnp
 /.vscode
