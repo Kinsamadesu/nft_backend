@@ -25,6 +25,10 @@ contract SimpleNFT is ERC721, Ownable, PaymentSplitter {
     return _tokenIdCounter.current();
   }
 
+  function maxSupply() public pure returns (uint256) {
+    return TOTAL_SUPPLY;
+  }
+
   function _baseURI() internal pure override returns (string memory) {
     return
       'https://ipfs.io/ipfs/bafybeieeyvkwksmfscj4t47bf6cb7ukkj5nb7nygchsqnupc2vv3uowqca/metadata/';

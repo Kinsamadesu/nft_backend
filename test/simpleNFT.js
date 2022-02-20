@@ -35,6 +35,11 @@ describe('SimpleNFT contract', function () {
       expect(supply.toNumber()).equals(2);
     });
 
+    it('should return the max supply', async () => {
+      let supply = await contract.maxSupply();
+      expect(supply.toNumber()).equals(3);
+    });
+
     it('should list token for a specific address', async () => {
       await contract.freeMint(owner.address);
       await contract.freeMint(owner.address);
